@@ -20,7 +20,7 @@ export default function Header({ user }) {
   return (
     <header className="header">
       {/* Logo */}
-      <div className="logo">{window.innerWidth <= 600 ? "Laundry App" : "Laundry App"}</div>
+      <div className="logo" onClick={() => navigate("/orders")}>{window.innerWidth <= 600 ? "Laundry App" : "Laundry App"}</div>
 
       {/* Hamburger Icon */}
       <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
