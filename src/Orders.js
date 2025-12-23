@@ -1,45 +1,42 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, Timestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
-import "./Orders.css"; // new CSS file
+import "./Orders.css";
 
 export default function Orders({ user }) {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchToken, setSearchToken] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
 
+  const isAdmin = user.email === "lavisaini1996@gmail.com";
+
+  /* 🔹 Format Firestore Timestamp */
+  const formatDate = (ts) => {
+    if (!ts) return "-";
+    const d = ts.toDate();
+    return `${d.getDate().toString().padStart(2, "0")}-${(d.getMonth()+1)
+      .toString().padStart(2, "0")}-${d.getFullYear()}`;
+  };
+
+  /* 🔹 Load Orders */
   const loadOrders = async () => {
     setLoading(true);
     try {
       const snap = await getDocs(collection(db, "orders"));
-      const allOrders = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      const allOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-      if (user.email === "lavisaini1996@gmail.com") {
-        setOrders(allOrders); // Admin sees all
-      } else {
-        const userOrders = allOrders.filter(
-          (o) => o.customerEmail === user.email
-        );
-        setOrders(userOrders); // Regular user sees only their orders
-      }
-    } catch (err) {
+      const visible = isAdmin
+        ? allOrders
+        : allOrders.filter(o => o.customerEmail === user.email);
+
+      setOrders(visible);
+      setFilteredOrders(visible);
+    } catch {
       toast.error("Failed to load orders");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const collectOrder = async (id, status) => {
-    if (status === "completed") return;
-
-    setLoading(true);
-    try {
-      await updateDoc(doc(db, "orders", id), { status: "completed" });
-      toast.success("Order marked as completed!");
-      loadOrders();
-    } catch (err) {
-      toast.error("Failed to update order");
     } finally {
       setLoading(false);
     }
@@ -49,41 +46,150 @@ export default function Orders({ user }) {
     if (user) loadOrders();
   }, [user]);
 
+  /* 🔍 Search by Token */
+  useEffect(() => {
+    setFilteredOrders(
+      orders.filter(o =>
+        o.tokenNo?.toLowerCase().includes(searchToken.toLowerCase())
+      )
+    );
+  }, [searchToken, orders]);
+
+  /* ↕ Sorting */
+  const sortBy = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+
+    const sorted = [...filteredOrders].sort((a, b) => {
+      const valA = a[key]?.seconds || a[key];
+      const valB = b[key]?.seconds || b[key];
+
+      if (valA < valB) return direction === "asc" ? -1 : 1;
+      if (valA > valB) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setSortConfig({ key, direction });
+    setFilteredOrders(sorted);
+  };
+
+  /* ✅ Collect Order */
+  const collectOrder = async (id, status) => {
+    if (status === "completed") return;
+
+    setLoading(true);
+    try {
+      await updateDoc(doc(db, "orders", id), { status: "completed" });
+      toast.success("Order marked as completed");
+      loadOrders();
+    } catch {
+      toast.error("Failed to update order");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* 📦 Admin updates delivery date */
+  const updateDeliveryDate = async (id, value) => {
+    try {
+      await updateDoc(doc(db, "orders", id), {
+        delivery_date: Timestamp.fromDate(new Date(value))
+      });
+      toast.success("Delivery date updated");
+      loadOrders();
+    } catch {
+      toast.error("Failed to update delivery date");
+    }
+  };
+
   return (
     <div className="orders-container">
       {loading && <Loader />}
 
       <h2>Orders Tracking</h2>
-      {orders.length === 0 && !loading && <p>No orders found</p>}
 
-      <div className="orders-list">
-        {orders.map((o) => (
-          <div key={o.id} className="order-card">
-            <p><b>Token:</b> {o.tokenNo}</p>
-            <p><b>Name:</b> {o.name}</p>
-            <p><b>Status:</b> <span className={o.status}>{o.status}</span></p>
-            <p><b>Delivery:</b> {o.deliveryDate}</p>
-            <p><b>Total:</b> ₹{o.totalAmount}</p>
+      <input
+        className="search-input"
+        placeholder="Search by Token Number"
+        value={searchToken}
+        onChange={(e) => setSearchToken(e.target.value)}
+      />
 
-            <div className="order-items">
-              {o.items?.map((i, idx) => (
-                <p key={idx}>
-                  {i.clothType} – {i.service} – {i.qty} × ₹{i.price}
-                </p>
-              ))}
-            </div>
+      {filteredOrders.length === 0 && !loading && <p>No orders found</p>}
 
-            {(user.email === "lavisaini1996@gmail.com" || o.customerEmail === user.email) && (
-              <button
-                className="collect-btn"
-                disabled={o.status === "completed"}
-                onClick={() => collectOrder(o.id, o.status)}
-              >
-                {o.status === "completed" ? "Completed" : "Collect Order"}
-              </button>
-            )}
-          </div>
-        ))}
+      <div className="table-wrapper">
+        <table className="orders-table">
+          <thead>
+            <tr>
+              <th onClick={() => sortBy("tokenNo")}>Token ⬍</th>
+              <th onClick={() => sortBy("name")}>Name ⬍</th>
+              <th>Mobile</th>
+              <th>Items</th>
+              <th onClick={() => sortBy("totalAmount")}>Amount ⬍</th>
+              <th onClick={() => sortBy("order_date")}>Order Date ⬍</th>
+              <th onClick={() => sortBy("delivery_date")}>Delivery Date ⬍</th>
+              <th onClick={() => sortBy("status")}>Status ⬍</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {filteredOrders.map(o => (
+              <tr key={o.id}>
+                <td>{o.tokenNo}</td>
+                <td>{o.name}</td>
+                <td>{o.mobile}</td>
+
+                <td className="items-cell">
+                  {o.items?.map((i, idx) => (
+                    <div key={idx}>
+                      {i.clothType} – {i.service} × {i.qty}
+                    </div>
+                  ))}
+                </td>
+
+                <td>₹{o.totalAmount}</td>
+                <td>{formatDate(o.order_date)}</td>
+
+                <td>
+                  {isAdmin ? (
+                    <input
+                      type="date"
+                      value={
+                        o.delivery_date
+                          ? o.delivery_date.toDate().toISOString().split("T")[0]
+                          : ""
+                      }
+                      onChange={(e) =>
+                        updateDeliveryDate(o.id, e.target.value)
+                      }
+                    />
+                  ) : (
+                    formatDate(o.delivery_date)
+                  )}
+                </td>
+
+                <td>
+                  <span className={`status ${o.status}`}>{o.status}</span>
+                </td>
+
+                <td>
+                  {(isAdmin || o.customerEmail === user.email) && (
+                    <button
+                      className="collect-btn"
+                      disabled={o.status === "completed"}
+                      onClick={() => collectOrder(o.id, o.status)}
+                    >
+                      {o.status === "completed" ? "Completed" : "Collect"}
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -13,31 +13,36 @@ export default function AddOrder() {
 
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
-  const [deliveryDate, setDeliveryDate] = useState("");
   const [items, setItems] = useState([]);
   const [clothType, setClothType] = useState("");
   const [service, setService] = useState(null);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // For searchable dropdown
+  // Searchable dropdown states
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const dropdownRef = useRef();
+  const dropdownRef = useRef(null);
 
   const filteredServices = SERVICES.filter(s =>
     s.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  // Add cloth item
   const addItem = () => {
     if (!clothType.trim() || !service || qty < 1) {
       toast.error("Fill all item fields correctly");
       return;
     }
 
-    setItems([
-      ...items,
-      { clothType: clothType.trim(), service: service.name, qty, price: service.price }
+    setItems(prev => [
+      ...prev,
+      {
+        clothType: clothType.trim(),
+        service: service.name,
+        qty,
+        price: service.price
+      }
     ]);
 
     setClothType("");
@@ -47,14 +52,15 @@ export default function AddOrder() {
     setDropdownOpen(false);
   };
 
+  // Delete cloth item
   const deleteItem = (index) => {
-    const updatedItems = items.filter((_, i) => i !== index);
-    setItems(updatedItems);
+    setItems(prev => prev.filter((_, i) => i !== index));
   };
 
-  const totalClothes = items.reduce((s, i) => s + i.qty, 0);
-  const totalAmount = items.reduce((s, i) => s + i.qty * i.price, 0);
+  const totalClothes = items.reduce((sum, i) => sum + i.qty, 0);
+  const totalAmount = items.reduce((sum, i) => sum + i.qty * i.price, 0);
 
+  // Submit order
   const submitOrder = async () => {
     if (!name.trim()) {
       toast.error("Customer name is required");
@@ -67,19 +73,6 @@ export default function AddOrder() {
       return;
     }
 
-    if (!deliveryDate) {
-      toast.error("Delivery date is required");
-      return;
-    }
-
-    const selectedDate = new Date(deliveryDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (selectedDate < today) {
-      toast.error("Delivery date cannot be in the past");
-      return;
-    }
-
     if (items.length === 0) {
       toast.error("Add at least one item to the order");
       return;
@@ -87,11 +80,14 @@ export default function AddOrder() {
 
     setLoading(true);
     try {
+      const tokenNo = await generateToken();
+
       await addDoc(collection(db, "orders"), {
-        tokenNo: generateToken(),
+        tokenNo,
         name: name.trim(),
         mobile,
-        deliveryDate,
+        order_date: Timestamp.now(), // ✅ auto current date
+        delivery_date: null,         // ✅ admin will update later
         items,
         totalClothes,
         totalAmount,
@@ -99,19 +95,21 @@ export default function AddOrder() {
         customerEmail: auth.currentUser.email,
         createdAt: Timestamp.now(),
       });
+
       toast.success("Order Added Successfully!");
       navigate("/orders");
     } catch (err) {
+      console.error(err);
       toast.error("Failed to add order");
     } finally {
       setLoading(false);
     }
   };
 
-  // Close dropdown when clicking outside
+  // Close dropdown on outside click
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
       }
     };
@@ -122,6 +120,7 @@ export default function AddOrder() {
   return (
     <div className="addorder-container">
       {loading && <Loader />}
+
       <h2>Add Laundry Order</h2>
 
       <input
@@ -136,12 +135,6 @@ export default function AddOrder() {
         onChange={e => setMobile(e.target.value)}
       />
 
-      <input
-        type="date"
-        value={deliveryDate}
-        onChange={e => setDeliveryDate(e.target.value)}
-      />
-
       <h3>Add Cloth</h3>
 
       <input
@@ -150,11 +143,15 @@ export default function AddOrder() {
         onChange={e => setClothType(e.target.value)}
       />
 
-      {/* Custom searchable dropdown */}
+      {/* Searchable Service Dropdown */}
       <div className="dropdown-container" ref={dropdownRef}>
-        <div className="dropdown-header" onClick={() => setDropdownOpen(!dropdownOpen)}>
+        <div
+          className="dropdown-header"
+          onClick={() => setDropdownOpen(prev => !prev)}
+        >
           {service ? service.name : "Select Service"}
         </div>
+
         {dropdownOpen && (
           <div className="dropdown-list">
             <input
@@ -164,15 +161,22 @@ export default function AddOrder() {
               onChange={e => setSearchText(e.target.value)}
               className="dropdown-search"
             />
-            {filteredServices.length === 0 && <p className="no-item">No services found</p>}
+
+            {filteredServices.length === 0 && (
+              <p className="no-item">No services found</p>
+            )}
+
             {filteredServices.map(s => (
               <div
                 key={s.name}
                 className="dropdown-item"
-                onClick={() => { setService(s); setDropdownOpen(false); setSearchText(""); }}
+                onClick={() => {
+                  setService(s);
+                  setDropdownOpen(false);
+                  setSearchText("");
+                }}
               >
                 {s.name}
-                 {/* (₹{s.price}) */}
               </div>
             ))}
           </div>
@@ -186,9 +190,12 @@ export default function AddOrder() {
         onChange={e => setQty(Number(e.target.value))}
       />
 
-      <button className="add-item-btn" onClick={addItem}>Add Item</button>
+      <button className="add-item-btn" onClick={addItem}>
+        Add Item
+      </button>
 
       <h3>Order Summary</h3>
+
       {items.length === 0 && <p className="no-item">No items added</p>}
 
       <ul>
