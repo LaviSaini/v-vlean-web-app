@@ -1,206 +1,326 @@
-export const SERVICES = [
-  // Men's Wear
-  { name: "Wash - Apron (Doctor white)", price: 49 },
-  { name: "Dry Clean - Apron (Doctor white)", price: 89 },
-  { name: "Ironing - Apron", price: 15 },
-  { name: "Steam Ironing - Apron", price: 27 },
-  { name: "Dry Clean - Coat/Blazer", price: 249 },
-  { name: "Steam Ironing - Coat/Blazer", price: 99 },
-  { name: "Dry Clean - Mens Suit 2pcs", price: 378 },
-  { name: "Dry Clean - Mens Suit 3pcs", price: 479 },
-  { name: "Steam Ironing - Mens Suit 2pcs", price: 180 },
-  { name: "Steam Ironing - Mens Suit 3pcs", price: 240 },
-  { name: "Dry Clean - Sherwani", price: 475 },
-  { name: "Steam Ironing - Sherwani", price: 99 },
-  { name: "Dry Clean - Sherwani (2pc)", price: 469 },
-  { name: "Dry Clean - Sherwani (G pc)", price: 599 },
-  { name: "Steam Ironing - Sherwani (2pc)", price: 149 },
-  { name: "Steam Ironing - Sherwani (G pc)", price: 199 },
-  { name: "Wash - Jacket Full", price: 199 },
-  { name: "Dry Clean - Jacket Full", price: 269 },
-  { name: "Steam Ironing - Jacket Full", price: 99 },
-  { name: "Wash - Jacket Half", price: 149 },
-  { name: "Dry Clean - Jacket Half", price: 229 },
-  { name: "Steam Ironing - Jacket Half", price: 75 },
-  { name: "Dry Clean - Leather Jacket", price: 465 },
-  { name: "Steam Ironing - Leather Jacket", price: 195 },
-  { name: "Wash - Hoodies", price: 199 },
-  { name: "Dry Clean - Hoodies", price: 269 },
-  { name: "Steam Ironing - Hoodies", price: 75 },
-  { name: "Wash - Swetor Full", price: 149 },
-  { name: "Dry Clean - Swetor Full", price: 139 },
-  { name: "Steam Ironing - Swetor Full", price: 75 },
-  { name: "Wash - Swetor Half", price: 90 },
-  { name: "Dry Clean - Swetor Half", price: 189 },
-  { name: "Steam Ironing - Swetor Half", price: 75 },
-  { name: "Wash - Kurta (Single pc.)", price: 89 },
-  { name: "Dry Clean - Kurta (Single pc.)", price: 110 },
-  { name: "Ironing - Kurta", price: 20 },
-  { name: "Steam Ironing - Kurta", price: 40 },
-  { name: "Wash - Pajama (Single pc.)", price: 89 },
-  { name: "Dry Clean - Pajama (Single pc.)", price: 99 },
-  { name: "Ironing - Pajama", price: 15 },
-  { name: "Steam Ironing - Pajama", price: 30 },
-  { name: "Wash - Kurta & Pajama (1 Pair)", price: 178 },
-  { name: "Dry Clean - Kurta & Pajama (1 Pair)", price: 209 },
-  { name: "Ironing - Kurta & Pajama", price: 40 },
-  { name: "Steam Ironing - Kurta & Pajama", price: 52 },
-  { name: "Wash - Sadrin", price: 149 },
-  { name: "Dry Clean - Sadrin", price: 229 },
-  { name: "Steam Ironing - Sadrin", price: 75 },
-  { name: "Wash - Denim (Jeans)", price: 89 },
-  { name: "Dry Clean - Denim (Jeans)", price: 149 },
-  { name: "Ironing - Denim", price: 8 },
-  { name: "Steam Ironing - Denim", price: 18 },
-  { name: "Wash - T-Shirt", price: 49 },
-  { name: "Dry Clean - T-Shirt", price: 79 },
-  { name: "Ironing - T-Shirt", price: 8 },
-  { name: "Steam Ironing - T-Shirt", price: 18 },
-  { name: "Wash - Trouser (Pant)", price: 49 },
-  { name: "Dry Clean - Trouser (Pant)", price: 109 },
-  { name: "Ironing - Trouser", price: 8 },
-  { name: "Steam Ironing - Trouser", price: 18 },
-  { name: "Wash - Shirt", price: 49 },
-  { name: "Dry Clean - Shirt", price: 109 },
-  { name: "Ironing - Shirt", price: 8 },
-  { name: "Steam Ironing - Shirt", price: 18 },
-  { name: "Wash - Charak (Stand) / per cloth", price: 55 },
-  { name: "Ironing - Charak", price: 20 },
-  { name: "Steam Ironing - Charak", price: 49 },
-
-  // Women's Wear
-  { name: "Dry Clean - Baby dress", price: 299 },
-  { name: "Steam Ironing - Baby dress", price: 60 },
-  { name: "Dry Clean - Baby Jacket", price: 199 },
-  { name: "Steam Ironing - Baby Jacket", price: 75 },
-  { name: "Wash - Frock", price: 149 },
-  { name: "Dry Clean - Frock", price: 199 },
-  { name: "Steam Ironing - Frock", price: 45 },
-  { name: "Wash - Gown", price: 199 },
-  { name: "Dry Clean - Gown", price: 299 },
-  { name: "Ironing - Gown", price: 75 },
-  { name: "Steam Ironing - Gown", price: 149 },
-  { name: "Dry Clean - Designer Gown (Long/Heavy)", price: 349 },
-  { name: "Ironing - Designer Gown", price: 75 },
-  { name: "Steam Ironing - Designer Gown", price: 199 },
-  { name: "Wash - Kurti Or Salwar (Single pc.)", price: 89 },
-  { name: "Dry Clean - Kurti Or Salwar (Single pc.)", price: 98 },
-  { name: "Ironing - Kurti/Salwar", price: 8 },
-  { name: "Steam Ironing - Kurti/Salwar", price: 19 },
-  { name: "Wash - Dupatta", price: 49 },
-  { name: "Dry Clean - Dupatta", price: 65 },
-  { name: "Ironing - Dupatta", price: 15 },
-  { name: "Steam Ironing - Dupatta", price: 25 },
-  { name: "Wash - Kurti + Salwar + Dupatta (3pc)", price: 109 },
-  { name: "Dry Clean - Kurti + Salwar + Dupatta (3pc)", price: 249 },
-  { name: "Ironing - Kurti + Salwar + Dupatta", price: 55 },
-  { name: "Steam Ironing - Kurti + Salwar + Dupatta", price: 75 },
-  { name: "Wash - Suit Designer (2pc)", price: 199 },
-  { name: "Dry Clean - Suit Designer (2pc)", price: 299 },
-  { name: "Ironing - Suit Designer (2pc)", price: 45 },
-  { name: "Steam Ironing - Suit Designer (2pc)", price: 75 },
-  { name: "Wash - Suit Designer (3pc)", price: 249 },
-  { name: "Dry Clean - Suit Designer (3pc)", price: 494 },
-  { name: "Ironing - Suit Designer (3pc)", price: 55 },
-  { name: "Steam Ironing - Suit Designer (3pc)", price: 75 },
-  { name: "Wash - Saree Simple", price: 149 },
-  { name: "Dry Clean - Saree Simple", price: 229 },
-  { name: "Ironing - Saree Simple", price: 28 },
-  { name: "Steam Ironing - Saree Simple", price: 55 },
-  { name: "Wash - Saree+Blouse (Simple)", price: 199 },
-  { name: "Dry Clean - Saree+Blouse (Simple)", price: 289 },
-  { name: "Ironing - Saree+Blouse", price: 46 },
-  { name: "Steam Ironing - Saree+Blouse", price: 70 },
-  { name: "Dry Clean - Saree Designer", price: 375 },
-  { name: "Ironing - Saree Designer", price: 75 },
-  { name: "Steam Ironing - Saree Designer", price: 100 },
-  { name: "Dry Clean - Silk Saree", price: 375 },
-  { name: "Ironing - Silk Saree", price: 75 },
-  { name: "Steam Ironing - Silk Saree", price: 100 },
-  { name: "Dry Clean - Saree (Grafyvaram)", price: 375 },
-  { name: "Ironing - Saree (Grafyvaram)", price: 75 },
-  { name: "Steam Ironing - Saree (Grafyvaram)", price: 100 },
-  { name: "Dry Clean - Saree (Banarasi)", price: 375 },
-  { name: "Ironing - Saree (Banarasi)", price: 75 },
-  { name: "Steam Ironing - Saree (Banarasi)", price: 100 },
-  { name: "Wash - Lehenga Simple", price: 299 },
-  { name: "Dry Clean - Lehenga Simple", price: 399 },
-  { name: "Steam Ironing - Lehenga Simple", price: 195 },
-  { name: "Wash - Lehenga Designer/Heavy", price: 499 },
-  { name: "Dry Clean - Lehenga Designer/Heavy", price: 799 },
-  { name: "Steam Ironing - Lehenga Designer/Heavy", price: 299 },
-  { name: "Wash - Shawl/Shawl", price: 49 },
-  { name: "Dry Clean - Shawl (Basic)", price: 149 },
-  { name: "Dry Clean - Shawl (Premium)", price: 450 },
-  { name: "Ironing - Shawl", price: 15 },
-  { name: "Steam Ironing - Shawl", price: 27 },
-  { name: "Wash - Saree Charak (Starch)", price: 55 },
-  { name: "Dry Clean - Saree Charak", price: 69 },
-  { name: "Ironing - Saree Charak", price: 28 },
-  { name: "Steam Ironing - Saree Charak", price: 55 },
-
-  // Household Non Wearable
-  { name: "Dry Clean - Single Bed Blanket 1 Ply", price: 249 },
-  { name: "Dry Clean - Single Bed Blanket 2 Ply", price: 249 },
-  { name: " Single Bed Blanket 1 Ply", price: 320 },
-  { name: " Single Bed Blanket 2 Ply", price: 410 },
-  { name: "Dry Clean - Double Bed Blanket 1 Ply", price: 399 },
-  { name: "Dry Clean - Double Bed Blanket 2 Ply", price: 499 },
-  { name: " Double Bed Blanket 1 Ply", price: 430 },
-  { name: " Double Bed Blanket 2 Ply", price: 530 },
-  { name: "Dry Clean - Comforter Single", price: 299 },
-  { name: "Dry Clean - Comforter Double", price: 399 },
-  { name: " Comforter Single", price: 430 },
-  { name: " Comforter Double", price: 530 },
-  { name: "Dry Clean - Raza/Quilt Single", price: 399 },
-  { name: "Dry Clean - Raza/Quilt Double", price: 499 },
-  { name: " Raza/Quilt Single", price: 430 },
-  { name: " Raza/Quilt Double", price: 530 },
-  { name: "Wash - Bed Sheet Single", price: 79 },
-  { name: "Wash - Bed Sheet Double", price: 99 },
-  { name: "Dry Clean - Bed Sheet Single", price: 159 },
-  { name: "Dry Clean - Bed Sheet Double", price: 199 },
-  { name: "Ironing - Bed Sheet Single", price: 35 },
-  { name: "Ironing - Bed Sheet Double", price: 49 },
-  { name: "Steam Ironing - Bed Sheet Single", price: 55 },
-  { name: "Steam Ironing - Bed Sheet Double", price: 75 },
-  { name: "Wash - Pillow Cover", price: 29 },
-  { name: "Dry Clean - Pillow Cover", price: 49 },
-  { name: "Ironing - Pillow Cover", price: 8 },
-  { name: "Steam Ironing - Pillow Cover", price: 20 },
-  { name: "Dry Clean - Carpet (0-25 sq.ft.) per sq.ft.", price: 15 },
-  { name: "Dry Clean - Carpet (25-50 sq.ft.) per sq.ft.", price: 13 },
-  { name: "Dry Clean - Carpet (>50 sq.ft.) per sq.ft.", price: 11 },
-  { name: "Dry Clean - Duvet", price: 90 },
-  { name: "Dry Clean - Curtains Door/Window (Without Lining)", price: 170 },
-  { name: "Ironing - Curtains", price: 45 },
-  { name: "Steam Ironing - Curtains", price: 75 },
-  { name: "Dry Clean - Curtains Door/Window (With Lining)", price: 270 },
-  { name: "Wash - Single Curtain (Size 4x8)", price: 119 },
-  { name: "Dry Clean - Single Curtain (Size 4x8)", price: 199 },
-  { name: "Wash - Single Curtain (Size 6x3)", price: 89 },
-  { name: "Dry Clean - Single Curtain (Size 6x3)", price: 299 },
-  { name: "Dry Clean - Curtain (Panel)", price: 150 },
-  { name: "Steam Ironing - Curtain (Panel)", price: 89 },
-  { name: "Wash - Raza/Quilt Cover Single", price: 109 },
-  { name: "Wash - Raza/Quilt Cover Double", price: 149 },
-  { name: "Dry Clean - Raza/Quilt Cover Single", price: 159 },
-  { name: "Dry Clean - Raza/Quilt Cover Double", price: 199 },
-  { name: "Ironing - Raza/Quilt Cover Single", price: 29 },
-  { name: "Ironing - Raza/Quilt Cover Double", price: 49 },
-  { name: "Steam Ironing - Raza/Quilt Cover", price: 55 },
-
+export const SERVICES = {
+  // Men's Wear categorized by item type
+  "Men's Wear": {
+    "Apron (Doctor white)": [
+      { name: "Wash", price: 49 },
+      { name: "Dry Clean", price: 89 },
+      { name: "Ironing", price: 15 },
+      { name: "Steam Ironing", price: 27 }
+    ],
+    "Coat/Blazer": [
+      { name: "Dry Clean", price: 249 },
+      { name: "Steam Ironing", price: 99 }
+    ],
+    "Mens Suit": [
+      { name: "Dry Clean - 2pcs", price: 378 },
+      { name: "Dry Clean - 3pcs", price: 479 },
+      { name: "Steam Ironing - 2pcs", price: 180 },
+      { name: "Steam Ironing - 3pcs", price: 240 }
+    ],
+    "Sherwani": [
+      { name: "Dry Clean", price: 475 },
+      { name: "Steam Ironing", price: 99 }
+    ],
+    "Sherwani (2pc/G pc)": [
+      { name: "Dry Clean - 2pc", price: 469 },
+      { name: "Dry Clean - G pc", price: 599 },
+      { name: "Steam Ironing - 2pc", price: 149 },
+      { name: "Steam Ironing - G pc", price: 199 }
+    ],
+    "Jacket Full": [
+      { name: "Wash", price: 199 },
+      { name: "Dry Clean", price: 269 },
+      { name: "Steam Ironing", price: 99 }
+    ],
+    "Jacket Half": [
+      { name: "Wash", price: 149 },
+      { name: "Dry Clean", price: 229 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Leather Jacket": [
+      { name: "Dry Clean", price: 465 },
+      { name: "Steam Ironing", price: 195 }
+    ],
+    "Hoodies": [
+      { name: "Wash", price: 199 },
+      { name: "Dry Clean", price: 269 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Swetor Full": [
+      { name: "Wash", price: 149 },
+      { name: "Dry Clean", price: 139 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Swetor Half": [
+      { name: "Wash", price: 90 },
+      { name: "Dry Clean", price: 189 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Kurta (Single pc.)": [
+      { name: "Wash", price: 89 },
+      { name: "Dry Clean", price: 110 },
+      { name: "Ironing", price: 20 },
+      { name: "Steam Ironing", price: 40 }
+    ],
+    "Pajama (Single pc.)": [
+      { name: "Wash", price: 89 },
+      { name: "Dry Clean", price: 99 },
+      { name: "Ironing", price: 15 },
+      { name: "Steam Ironing", price: 30 }
+    ],
+    "Kurta & Pajama (1 Pair)": [
+      { name: "Wash", price: 178 },
+      { name: "Dry Clean", price: 209 },
+      { name: "Ironing", price: 40 },
+      { name: "Steam Ironing", price: 52 }
+    ],
+    "Sadrin": [
+      { name: "Wash", price: 149 },
+      { name: "Dry Clean", price: 229 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Denim (Jeans)": [
+      { name: "Wash", price: 89 },
+      { name: "Dry Clean", price: 149 },
+      { name: "Ironing", price: 8 },
+      { name: "Steam Ironing", price: 18 }
+    ],
+    "T-Shirt": [
+      { name: "Wash", price: 49 },
+      { name: "Dry Clean", price: 79 },
+      { name: "Ironing", price: 8 },
+      { name: "Steam Ironing", price: 18 }
+    ],
+    "Trouser (Pant)": [
+      { name: "Wash", price: 49 },
+      { name: "Dry Clean", price: 109 },
+      { name: "Ironing", price: 8 },
+      { name: "Steam Ironing", price: 18 }
+    ],
+    "Shirt": [
+      { name: "Wash", price: 49 },
+      { name: "Dry Clean", price: 109 },
+      { name: "Ironing", price: 8 },
+      { name: "Steam Ironing", price: 18 }
+    ],
+    "Charak (Stand) / per cloth": [
+      { name: "Wash", price: 55 },
+      { name: "Ironing", price: 20 },
+      { name: "Steam Ironing", price: 49 }
+    ]
+  },
+  
+  // Women's Wear categorized by item type
+  "Women's Wear": {
+    "Baby dress": [
+      { name: "Dry Clean", price: 299 },
+      { name: "Steam Ironing", price: 60 }
+    ],
+    "Baby Jacket": [
+      { name: "Dry Clean", price: 199 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Frock": [
+      { name: "Wash", price: 149 },
+      { name: "Dry Clean", price: 199 },
+      { name: "Steam Ironing", price: 45 }
+    ],
+    "Gown": [
+      { name: "Wash", price: 199 },
+      { name: "Dry Clean", price: 299 },
+      { name: "Ironing", price: 75 },
+      { name: "Steam Ironing", price: 149 }
+    ],
+    "Designer Gown (Long/Heavy)": [
+      { name: "Dry Clean", price: 349 },
+      { name: "Ironing", price: 75 },
+      { name: "Steam Ironing", price: 199 }
+    ],
+    "Kurti Or Salwar (Single pc.)": [
+      { name: "Wash", price: 89 },
+      { name: "Dry Clean", price: 98 },
+      { name: "Ironing", price: 8 },
+      { name: "Steam Ironing", price: 19 }
+    ],
+    "Dupatta": [
+      { name: "Wash", price: 49 },
+      { name: "Dry Clean", price: 65 },
+      { name: "Ironing", price: 15 },
+      { name: "Steam Ironing", price: 25 }
+    ],
+    "Kurti + Salwar + Dupatta (3pc)": [
+      { name: "Wash", price: 109 },
+      { name: "Dry Clean", price: 249 },
+      { name: "Ironing", price: 55 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Suit Designer (2pc)": [
+      { name: "Wash", price: 199 },
+      { name: "Dry Clean", price: 299 },
+      { name: "Ironing", price: 45 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Suit Designer (3pc)": [
+      { name: "Wash", price: 249 },
+      { name: "Dry Clean", price: 494 },
+      { name: "Ironing", price: 55 },
+      { name: "Steam Ironing", price: 75 }
+    ],
+    "Saree Simple": [
+      { name: "Wash", price: 149 },
+      { name: "Dry Clean", price: 229 },
+      { name: "Ironing", price: 28 },
+      { name: "Steam Ironing", price: 55 }
+    ],
+    "Saree+Blouse (Simple)": [
+      { name: "Wash", price: 199 },
+      { name: "Dry Clean", price: 289 },
+      { name: "Ironing", price: 46 },
+      { name: "Steam Ironing", price: 70 }
+    ],
+    "Saree Designer": [
+      { name: "Dry Clean", price: 375 },
+      { name: "Ironing", price: 75 },
+      { name: "Steam Ironing", price: 100 }
+    ],
+    "Silk Saree": [
+      { name: "Dry Clean", price: 375 },
+      { name: "Ironing", price: 75 },
+      { name: "Steam Ironing", price: 100 }
+    ],
+    "Saree (Grafyvaram)": [
+      { name: "Dry Clean", price: 375 },
+      { name: "Ironing", price: 75 },
+      { name: "Steam Ironing", price: 100 }
+    ],
+    "Saree (Banarasi)": [
+      { name: "Dry Clean", price: 375 },
+      { name: "Ironing", price: 75 },
+      { name: "Steam Ironing", price: 100 }
+    ],
+    "Lehenga Simple": [
+      { name: "Wash", price: 299 },
+      { name: "Dry Clean", price: 399 },
+      { name: "Steam Ironing", price: 195 }
+    ],
+    "Lehenga Designer/Heavy": [
+      { name: "Wash", price: 499 },
+      { name: "Dry Clean", price: 799 },
+      { name: "Steam Ironing", price: 299 }
+    ],
+    "Shawl/Shawl": [
+      { name: "Wash", price: 49 },
+      { name: "Dry Clean - Basic", price: 149 },
+      { name: "Dry Clean - Premium", price: 450 },
+      { name: "Ironing", price: 15 },
+      { name: "Steam Ironing", price: 27 }
+    ],
+    "Saree Charak (Starch)": [
+      { name: "Wash", price: 55 },
+      { name: "Dry Clean", price: 69 },
+      { name: "Ironing", price: 28 },
+      { name: "Steam Ironing", price: 55 }
+    ]
+  },
+  
+  // Household Items
+  "Household": {
+    "Bedding": {
+      "Single Bed Blanket": [
+        { name: "Dry Clean - 1 Ply", price: 249 },
+        { name: "Dry Clean - 2 Ply", price: 249 },
+        { name: "Tumble Dry - 1 Ply", price: 320 },
+        { name: "Tumble Dry - 2 Ply", price: 410 }
+      ],
+      "Double Bed Blanket": [
+        { name: "Dry Clean - 1 Ply", price: 399 },
+        { name: "Dry Clean - 2 Ply", price: 499 },
+        { name: "Tumble Dry - 1 Ply", price: 430 },
+        { name: "Tumble Dry - 2 Ply", price: 530 }
+      ],
+      "Comforter": [
+        { name: "Dry Clean - Single", price: 299 },
+        { name: "Dry Clean - Double", price: 399 },
+        { name: "Tumble Dry - Single", price: 430 },
+        { name: "Tumble Dry - Double", price: 530 }
+      ],
+      "Raza/Quilt": [
+        { name: "Dry Clean - Single", price: 399 },
+        { name: "Dry Clean - Double", price: 499 },
+        { name: "Tumble Dry - Single", price: 430 },
+        { name: "Tumble Dry - Double", price: 530 }
+      ],
+      "Bed Sheet": [
+        { name: "Wash - Single", price: 79 },
+        { name: "Wash - Double", price: 99 },
+        { name: "Dry Clean - Single", price: 159 },
+        { name: "Dry Clean - Double", price: 199 },
+        { name: "Ironing - Single", price: 35 },
+        { name: "Ironing - Double", price: 49 },
+        { name: "Steam Ironing - Single", price: 55 },
+        { name: "Steam Ironing - Double", price: 75 }
+      ],
+      "Pillow Cover": [
+        { name: "Wash", price: 29 },
+        { name: "Dry Clean", price: 49 },
+        { name: "Ironing", price: 8 },
+        { name: "Steam Ironing", price: 20 }
+      ],
+      "Raza/Quilt Cover": [
+        { name: "Wash - Single", price: 109 },
+        { name: "Wash - Double", price: 149 },
+        { name: "Dry Clean - Single", price: 159 },
+        { name: "Dry Clean - Double", price: 199 },
+        { name: "Ironing - Single", price: 29 },
+        { name: "Ironing - Double", price: 49 },
+        { name: "Steam Ironing", price: 55 }
+      ]
+    },
+    "Carpets & Rugs": {
+      "Carpet": [
+        { name: "Dry Clean - 0-25 sq.ft. (per sq.ft.)", price: 15 },
+        { name: "Dry Clean - 25-50 sq.ft. (per sq.ft.)", price: 13 },
+        { name: "Dry Clean - >50 sq.ft. (per sq.ft.)", price: 11 }
+      ]
+    },
+    "Curtains": {
+      "Duvet": [
+        { name: "Dry Clean", price: 90 }
+      ],
+      "Curtains Door/Window": [
+        { name: "Dry Clean - Without Lining", price: 170 },
+        { name: "Dry Clean - With Lining", price: 270 },
+        { name: "Ironing", price: 45 },
+        { name: "Steam Ironing", price: 75 }
+      ],
+      "Single Curtain": [
+        { name: "Wash - Size 4x8", price: 119 },
+        { name: "Dry Clean - Size 4x8", price: 199 },
+        { name: "Wash - Size 6x3", price: 89 },
+        { name: "Dry Clean - Size 6x3", price: 299 }
+      ],
+      "Curtain Panel": [
+        { name: "Dry Clean", price: 150 },
+        { name: "Steam Ironing", price: 89 }
+      ]
+    }
+  },
+  
   // Shoes
-  { name: "Dry Clean - Sports Shoes", price: 350 },
-  { name: "Dry Clean - Canvas/Sneakers (Non Leather)", price: 350 },
-  { name: "Dry Clean - Leather Shoes", price: 450 },
-  { name: "Dry Clean - Suede Leather Shoes", price: 530 },
-  { name: "Dry Clean - Boots", price: 590 },
-
+  "Shoes": [
+    { name: "Dry Clean - Sports", price: 350 },
+    { name: "Dry Clean - Canvas/Sneakers (Non Leather)", price: 350 },
+    { name: "Dry Clean - Leather", price: 450 },
+    { name: "Dry Clean - Suede Leather", price: 530 },
+    { name: "Dry Clean - Boots", price: 590 }
+  ],
+  
   // Bags
-  { name: "Dry Clean - Handbag", price: 399 },
-  { name: "Dry Clean - Canvas/Jute/Cloth Bag", price: 299 },
-  { name: "Dry Clean - Handbag Leather", price: 699 },
-  { name: "Dry Clean - Suit Case", price: 225 },
-  { name: "Dry Clean - Wallet", price: 249 },
-];
+  "Bags": [
+    { name: "Dry Clean - Handbag", price: 399 },
+    { name: "Dry Clean - Canvas/Jute/Cloth", price: 299 },
+    { name: "Dry Clean - Handbag Leather", price: 699 },
+    { name: "Dry Clean - Suit Case", price: 225 },
+    { name: "Dry Clean - Wallet", price: 249 }
+  ]
+};
