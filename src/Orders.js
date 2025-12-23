@@ -18,7 +18,7 @@ export default function Orders({ user }) {
   const formatDate = (ts) => {
     if (!ts) return "-";
     const d = ts.toDate();
-    return `${d.getDate().toString().padStart(2, "0")}-${(d.getMonth()+1)
+    return `${d.getDate().toString().padStart(2, "0")}-${(d.getMonth() + 1)
       .toString().padStart(2, "0")}-${d.getFullYear()}`;
   };
 
@@ -116,81 +116,82 @@ export default function Orders({ user }) {
         value={searchToken}
         onChange={(e) => setSearchToken(e.target.value)}
       />
-
       {filteredOrders.length === 0 && !loading && <p>No orders found</p>}
+      {filteredOrders.length != 0 &&
 
-      <div className="table-wrapper">
-        <table className="orders-table">
-          <thead>
-            <tr>
-              <th onClick={() => sortBy("tokenNo")}>Token ⬍</th>
-              <th onClick={() => sortBy("name")}>Name ⬍</th>
-              <th>Mobile</th>
-              <th>Items</th>
-              <th onClick={() => sortBy("totalAmount")}>Amount ⬍</th>
-              <th onClick={() => sortBy("order_date")}>Order Date ⬍</th>
-              <th onClick={() => sortBy("delivery_date")}>Delivery Date ⬍</th>
-              <th onClick={() => sortBy("status")}>Status ⬍</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredOrders.map(o => (
-              <tr key={o.id}>
-                <td>{o.tokenNo}</td>
-                <td>{o.name}</td>
-                <td>{o.mobile}</td>
-
-                <td className="items-cell">
-                  {o.items?.map((i, idx) => (
-                    <div key={idx}>
-                      {i.clothType} – {i.service} × {i.qty}
-                    </div>
-                  ))}
-                </td>
-
-                <td>₹{o.totalAmount}</td>
-                <td>{formatDate(o.order_date)}</td>
-
-                <td>
-                  {isAdmin ? (
-                    <input
-                      type="date"
-                      value={
-                        o.delivery_date
-                          ? o.delivery_date.toDate().toISOString().split("T")[0]
-                          : ""
-                      }
-                      onChange={(e) =>
-                        updateDeliveryDate(o.id, e.target.value)
-                      }
-                    />
-                  ) : (
-                    formatDate(o.delivery_date)
-                  )}
-                </td>
-
-                <td>
-                  <span className={`status ${o.status}`}>{o.status}</span>
-                </td>
-
-                <td>
-                  {(isAdmin || o.customerEmail === user.email) && (
-                    <button
-                      className="collect-btn"
-                      disabled={o.status === "completed"}
-                      onClick={() => collectOrder(o.id, o.status)}
-                    >
-                      {o.status === "completed" ? "Completed" : "Collect"}
-                    </button>
-                  )}
-                </td>
+        <div className="table-wrapper">
+          <table className="orders-table">
+            <thead>
+              <tr>
+                <th onClick={() => sortBy("tokenNo")}>Token ⬍</th>
+                <th onClick={() => sortBy("name")}>Name ⬍</th>
+                <th>Mobile</th>
+                <th>Items</th>
+                <th onClick={() => sortBy("totalAmount")}>Amount ⬍</th>
+                <th onClick={() => sortBy("order_date")}>Order Date ⬍</th>
+                <th onClick={() => sortBy("delivery_date")}>Delivery Date ⬍</th>
+                <th onClick={() => sortBy("status")}>Status ⬍</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody>
+              {filteredOrders.map(o => (
+                <tr key={o.id}>
+                  <td>{o.tokenNo}</td>
+                  <td>{o.name}</td>
+                  <td>{o.mobile}</td>
+
+                  <td className="items-cell">
+                    {o.items?.map((i, idx) => (
+                      <div key={idx}>
+                        {i.clothType} – {i.service} × {i.qty}
+                      </div>
+                    ))}
+                  </td>
+
+                  <td>₹{o.totalAmount}</td>
+                  <td>{formatDate(o.order_date)}</td>
+
+                  <td>
+                    {isAdmin ? (
+                      <input
+                        type="date"
+                        value={
+                          o.delivery_date
+                            ? o.delivery_date.toDate().toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          updateDeliveryDate(o.id, e.target.value)
+                        }
+                      />
+                    ) : (
+                      formatDate(o.delivery_date)
+                    )}
+                  </td>
+
+                  <td>
+                    <span className={`status ${o.status}`}>{o.status}</span>
+                  </td>
+
+                  <td>
+                    {(isAdmin || o.customerEmail === user.email) && (
+                      <button
+                        className="collect-btn"
+                        disabled={o.status === "completed"}
+                        onClick={() => collectOrder(o.id, o.status)}
+                      >
+                        {o.status === "completed" ? "Completed" : "Collect"}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
   );
 }
