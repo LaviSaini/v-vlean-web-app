@@ -116,3 +116,27 @@
     padding: 8px;
   }
 }
+.urgent-badge {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.urgent-badge.yes {
+  background-color: #ffebee;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+}
+
+.urgent-badge.no {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.urgent-row {
+  background-color: #fff8e1;
+}
+

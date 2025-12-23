@@ -63,8 +63,14 @@ export default function Orders({ user }) {
     }
 
     const sorted = [...filteredOrders].sort((a, b) => {
-      const valA = a[key]?.seconds || a[key];
-      const valB = b[key]?.seconds || b[key];
+      let valA = a[key];
+      let valB = b[key];
+
+      if (valA instanceof Timestamp) valA = valA.seconds;
+      if (valB instanceof Timestamp) valB = valB.seconds;
+
+      if (typeof valA === "boolean") valA = valA ? 1 : 0;
+      if (typeof valB === "boolean") valB = valB ? 1 : 0;
 
       if (valA < valB) return direction === "asc" ? -1 : 1;
       if (valA > valB) return direction === "asc" ? 1 : -1;
@@ -116,9 +122,10 @@ export default function Orders({ user }) {
         value={searchToken}
         onChange={(e) => setSearchToken(e.target.value)}
       />
-      {filteredOrders.length === 0 && !loading && <p>No orders found</p>}
-      {filteredOrders.length != 0 &&
 
+      {filteredOrders.length === 0 && !loading && <p>No orders found</p>}
+
+      {filteredOrders.length !== 0 && (
         <div className="table-wrapper">
           <table className="orders-table">
             <thead>
@@ -130,6 +137,10 @@ export default function Orders({ user }) {
                 <th onClick={() => sortBy("totalAmount")}>Amount ⬍</th>
                 <th onClick={() => sortBy("order_date")}>Order Date ⬍</th>
                 <th onClick={() => sortBy("delivery_date")}>Delivery Date ⬍</th>
+
+                {/* ✅ Urgent Column */}
+                <th onClick={() => sortBy("urgent")}>Urgent ⬍</th>
+
                 <th onClick={() => sortBy("status")}>Status ⬍</th>
                 <th>Action</th>
               </tr>
@@ -137,7 +148,7 @@ export default function Orders({ user }) {
 
             <tbody>
               {filteredOrders.map(o => (
-                <tr key={o.id}>
+                <tr key={o.id} className={o.urgent ? "urgent-row" : ""}>
                   <td>{o.tokenNo}</td>
                   <td>{o.name}</td>
                   <td>{o.mobile}</td>
@@ -171,6 +182,13 @@ export default function Orders({ user }) {
                     )}
                   </td>
 
+                  {/* ✅ Urgent Column */}
+                  <td>
+                    <span className={`urgent-badge ${o.urgent ? "yes" : "no"}`}>
+                      {o.urgent ? "YES" : "NO"}
+                    </span>
+                  </td>
+
                   <td>
                     <span className={`status ${o.status}`}>{o.status}</span>
                   </td>
@@ -191,7 +209,7 @@ export default function Orders({ user }) {
             </tbody>
           </table>
         </div>
-      }
+      )}
     </div>
   );
 }

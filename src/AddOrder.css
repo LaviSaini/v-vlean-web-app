@@ -13,52 +13,31 @@
 .addorder-container h4 {
     text-align: center;
     margin-bottom: 15px;
+    color: #333;
 }
 
-.no-item {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #888;
-    font-style: italic;
-    padding: 10px;
-}
-
-/* Input fields */
 .addorder-container input,
-.addorder-container select {
-    display: block;
+.addorder-container select,
+.addorder-container .dropdown-header,
+.addorder-container input[type="number"] {
     width: 100%;
-    margin: 8px 0;
+    box-sizing: border-box;
     padding: 10px;
+    margin: 8px 0;
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 16px;
-    box-sizing: border-box;
 }
 
-/* Quantity input specific */
-.quantity-input {
-    width: 120px !important;
+.addorder-container input[type="number"] {
     text-align: center;
 }
 
-.quantity-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 15px 0;
-}
-
-.quantity-container label {
-    font-weight: bold;
-    color: #333;
-    min-width: 80px;
-}
-
-/* Dropdown containers - consistent style for all three */
+/* Dropdown */
 .dropdown-container {
     position: relative;
     margin: 8px 0;
+    width: 100%;
     cursor: pointer;
 }
 
@@ -68,8 +47,8 @@
     border-radius: 5px;
     background: #fff;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
 
 .dropdown-header::after {
@@ -94,16 +73,6 @@
     background: #fff;
     z-index: 100;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.dropdown-search {
-    width: 95%;
-    margin: 5px auto;
-    display: block;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 14px;
 }
 
 .dropdown-item {
@@ -147,11 +116,6 @@
     background-color: #45a049;
 }
 
-.submit-order-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
 .submit-order-btn {
     background-color: #2196F3;
     margin-top: 20px;
@@ -159,6 +123,11 @@
 
 .submit-order-btn:hover {
     background-color: #0b7dda;
+}
+
+.submit-order-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
 /* Order Items List */
@@ -180,7 +149,7 @@ ul.order-items-list {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
 }
 
 .order-item:last-child {
@@ -193,28 +162,20 @@ ul.order-items-list {
     align-items: center;
     width: 100%;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
-.item-type {
-    font-weight: bold;
-    color: #333;
-    min-width: 120px;
-}
-
-.item-service {
-    color: #666;
-    min-width: 150px;
-}
-
-.item-qty {
-    color: #888;
+.item-type,
+.item-service,
+.item-qty,
+.item-total {
     min-width: 80px;
+    font-weight: 500;
 }
 
 .item-total {
-    font-weight: bold;
     color: #2196F3;
-    min-width: 80px;
+    font-weight: bold;
 }
 
 .delete-btn {
@@ -225,7 +186,6 @@ ul.order-items-list {
     border-radius: 3px;
     cursor: pointer;
     font-size: 12px;
-    margin-left: 10px;
     transition: background 0.2s;
 }
 
@@ -242,28 +202,43 @@ ul.order-items-list {
     border: 1px solid #ddd;
 }
 
-.order-totals h4 {
+.order-totals h4,
+.order-totals h3 {
     margin: 10px 0;
     display: flex;
     justify-content: space-between;
-    text-align: left;
-    font-size: 16px;
 }
 
-.order-totals h4:first-child {
-    color: #666;
+.addorder-container input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    transform: scale(1.2);
 }
 
-.order-totals h4:last-child {
-    color: #2196F3;
-    font-size: 20px;
+.urgent-container {
+    margin: 12px 0;
+    padding: 10px;
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+}
+
+.urgent-container label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.urgent-container input[type="checkbox"] {
+    transform: scale(1.2);
 }
 
 /* Section spacing */
 .addorder-container h3 {
     margin-top: 25px;
     margin-bottom: 15px;
-    color: #333;
     border-bottom: 2px solid #eee;
     padding-bottom: 8px;
 }
@@ -321,16 +296,6 @@ ul.order-items-list {
     .dropdown-item {
         padding: 8px;
         font-size: 14px;
-    }
-
-    .quantity-container {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .quantity-input {
-        width: 100% !important;
     }
 }
 
