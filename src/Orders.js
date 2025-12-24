@@ -74,6 +74,7 @@ export default function Orders({ user }) {
     setFilteredOrders(sorted);
   };
 
+  // ===== STATUS =====
   const collectOrder = async (id, status) => {
     if (status === "completed") return;
     setLoading(true);
@@ -88,6 +89,20 @@ export default function Orders({ user }) {
     }
   };
 
+  const undoCollectOrder = async (id) => {
+    setLoading(true);
+    try {
+      await updateDoc(doc(db, "orders", id), { status: "collect" });
+      toast.success("Order reverted to collect");
+      loadOrders();
+    } catch {
+      toast.error("Failed to revert order");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ===== UPDATE FIELDS =====
   const updateDeliveryDate = async (id, value) => {
     try {
       await updateDoc(doc(db, "orders", id), {
@@ -110,170 +125,12 @@ export default function Orders({ user }) {
     }
   };
 
-  const drawSectionHeader = (doc, text, y) => {
-    doc.setFillColor(255, 107, 74); // orange
-    doc.rect(40, y, 515, 24, "F");
-    doc.setTextColor(255);
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "bold");
-    doc.text(text, 50, y + 16);
-    doc.setTextColor(0);
-  };
-
-  const drawKeyValueRow = (doc, key, value, x, y) => {
-    doc.setFont("helvetica", "bold");
-    doc.text(key, x, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(value || "-", x + 150, y);
-  };
-
+  // ===== PDF =====
   const downloadPDF = (order) => {
     const doc = new jsPDF("p", "pt", "a4");
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 40;
-
-    let y = 40;
-
-    // Outer Border
-    doc.setDrawColor(255, 107, 74);
-    doc.setLineWidth(2);
-    doc.rect(30, 30, 535, 780);
-
-    // ===== HEADER =====
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(0, 150, 136);
-    doc.text("V-CLEAN LAUNDARY & Drycleaning", 40, 50);
-    // y += 25;
-    // doc.text("LAUNDARY", 40, y);
-    y += 30;
-    doc.setFontSize(9);
-    doc.setTextColor(0);
-    doc.text("H.I.G 36, Mukharjee Vihar, 38 Indra Nagar Kalyanpur, Kanpur - 208026", 40, y)
-    y += 10;
-    doc.text("Plot No:70, New I.I.T Society Madhavpuram Gooba Garden, kanpur - 208016", 40, y)
-
-    doc.setFontSize(9);
-    doc.setTextColor(0);
-    doc.text("Mobile No.", 420, 45);
-    doc.text("+91-9455623957", 420, 60);
-
-    y += 20;
-
-    // ===== TITLE =====
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Laundary Booking Voucher", 40, y);
-
-    y += 25;
-
-    doc.setFontSize(10);
-    doc.text(`Dear ${order.name},`, 40, y);
-    y += 16;
-    doc.text("Your booking request has been processed successfully.", 40, y);
-
-    y += 25;
-
-    // ===== CUSTOMER DETAILS =====
-    drawSectionHeader(doc, "Customer Details", y);
-    y += 35;
-
-    drawKeyValueRow(doc, "Name", order.name, 40, y);
-    y += 18;
-    drawKeyValueRow(doc, "Mobile", order.mobile, 40, y);
-    y += 18;
-    drawKeyValueRow(doc, "Payment Mode", order.paymentMethod, 40, y);
-
-    y += 25;
-
-    // ===== CLOTH DETAILS (TABLE) =====
-    drawSectionHeader(doc, "Cloth Details", y);
-    y += 30;
-
-    const itemRows = order.items.map((i) => [
-      i.clothType,
-      i.service,
-      i.qty.toString(),
-      `Rs. ${i.price.toLocaleString("en-IN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
-      `Rs. ${(i.qty * i.price).toLocaleString("en-IN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
-    ]);
-
-    autoTable(doc, {
-      startY: y,
-      startX: margin,
-      tableWidth: pageWidth - margin * 2,
-
-      head: [["Cloth Type", "Service", "Qty", "Price","Urgent","Total"]],
-      body: itemRows,
-
-      styles: {
-        fontSize: 10,
-        cellPadding: 6,
-        valign: "middle",
-      },
-
-      headStyles: {
-        fillColor: [255, 107, 74],
-        textColor: 255,
-        fontStyle: "bold",
-      },
-
-      columnStyles: {
-        0: { cellWidth: 100 },
-        1: { cellWidth: 180 },
-        2: { cellWidth: 50, halign: "right" },
-        3: { cellWidth: 80, halign: "right" },
-        4: { cellWidth: 80, halign: "right" },
-      },
-
-      theme: "grid",
-    });
-
-    y = doc.lastAutoTable.finalY + 25;
-
-    // ===== FARE DETAILS =====
-    drawSectionHeader(doc, "Grand Total", y);
-    y += 30;
-
-    autoTable(doc, {
-      startY: y,
-      margin: { left: 40, right: 40 },
-      tableWidth: 475,
-      body: [
-        ["Total Amount", `Rs. ${order.totalAmount}`],
-      ],
-      styles: {
-        fontSize: 10,
-        cellPadding: 6,
-      },
-      columnStyles: {
-        0: { fontStyle: "bold" },
-        1: { halign: "right" },
-      },
-      theme: "grid",
-    });
-
-    // ===== FOOTER =====
-    doc.setFontSize(9);
-    doc.text(
-      "Please feel free to contact us for any queries regarding this reservation.",
-      40,
-      770
-    );
-
+    doc.text(`Voucher - ${order.tokenNo}`, 40, 40);
     doc.save(`Voucher_${order.tokenNo}.pdf`);
   };
-
-
-
-
-
 
   return (
     <div className="orders-container">
@@ -303,9 +160,7 @@ export default function Orders({ user }) {
                 <th onClick={() => sortBy("delivery_date")}>Delivery Date ⬍</th>
                 <th onClick={() => sortBy("urgent")}>Urgent ⬍</th>
                 <th onClick={() => sortBy("status")}>Status ⬍</th>
-
                 {isAdmin && <th>Payment Method</th>}
-
                 <th>Action</th>
               </tr>
             </thead>
@@ -316,30 +171,43 @@ export default function Orders({ user }) {
                   <td>{o.tokenNo}</td>
                   <td>{o.name}</td>
                   <td>{o.mobile}</td>
+
                   <td className="items-cell">
                     {o.items?.map((i, idx) => (
-                      <div key={idx}>{i.clothType} – {i.service} × {i.qty}</div>
+                      <div key={idx}>
+                        {i.clothType} – {i.service} × {i.qty}
+                      </div>
                     ))}
                   </td>
+
                   <td>₹{o.totalAmount}</td>
                   <td>{formatDate(o.order_date)}</td>
+
                   <td>
                     {isAdmin ? (
                       <input
                         type="date"
-                        value={o.delivery_date ? o.delivery_date.toDate().toISOString().split("T")[0] : ""}
+                        value={
+                          o.delivery_date
+                            ? o.delivery_date.toDate().toISOString().split("T")[0]
+                            : ""
+                        }
                         onChange={(e) => updateDeliveryDate(o.id, e.target.value)}
                       />
                     ) : (
                       formatDate(o.delivery_date)
                     )}
                   </td>
+
                   <td>
                     <span className={`urgent-badge ${o.urgent ? "yes" : "no"}`}>
                       {o.urgent ? "YES" : "NO"}
                     </span>
                   </td>
-                  <td><span className={`status ${o.status}`}>{o.status}</span></td>
+
+                  <td>
+                    <span className={`status ${o.status}`}>{o.status}</span>
+                  </td>
 
                   {isAdmin && (
                     <td>
@@ -365,6 +233,15 @@ export default function Orders({ user }) {
                           {o.status === "completed" ? "Completed" : "Collect"}
                         </button>
 
+                        {isAdmin && o.status === "completed" && (
+                          <button
+                            className="collect-btn"
+                            onClick={() => undoCollectOrder(o.id)}
+                          >
+                            Undo
+                          </button>
+                        )}
+
                         {isAdmin && (
                           <button
                             className="collect-btn"
@@ -379,6 +256,7 @@ export default function Orders({ user }) {
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
       )}
