@@ -143,9 +143,9 @@ export default function Orders({ user }) {
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(0, 150, 136);
-    doc.text("V-CLEAN LAUNDARY", 40, 50);
-    y += 25;
-    doc.text("LAUNDARY", 40, y);
+    doc.text("V-CLEAN LAUNDARY & Drycleaning", 40, 50);
+    // y += 25;
+    // doc.text("LAUNDARY", 40, y);
     y += 30;
     doc.setFontSize(9);
     doc.setTextColor(0);
@@ -155,7 +155,7 @@ export default function Orders({ user }) {
 
     doc.setFontSize(9);
     doc.setTextColor(0);
-    doc.text("Helpdesk", 420, 45);
+    doc.text("Mobile No.", 420, 45);
     doc.text("+91-9455623957", 420, 60);
 
     y += 20;
@@ -209,7 +209,7 @@ export default function Orders({ user }) {
       startX: margin,
       tableWidth: pageWidth - margin * 2,
 
-      head: [["Cloth Type", "Service", "Qty", "Price", "Total"]],
+      head: [["Cloth Type", "Service", "Qty", "Price","Urgent","Total"]],
       body: itemRows,
 
       styles: {
