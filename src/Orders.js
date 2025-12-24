@@ -110,50 +110,79 @@ export default function Orders({ user }) {
     }
   };
 
-const downloadPDF = (order) => {
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "pt",
-    format: "a4",
-  });
+  const drawSectionHeader = (doc, text, y) => {
+  doc.setFillColor(255, 107, 74); // orange
+  doc.rect(40, y, 515, 24, "F");
+  doc.setTextColor(255);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.text(text, 50, y + 16);
+  doc.setTextColor(0);
+};
 
+const drawKeyValueRow = (doc, key, value, x, y) => {
+  doc.setFont("helvetica", "bold");
+  doc.text(key, x, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(value || "-", x + 150, y);
+};
+
+const downloadPDF = (order) => {
+  const doc = new jsPDF("p", "pt", "a4");
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 40;
-  let startY = 40;
 
-  doc.setFontSize(16);
-  doc.text(`Laundry Bill - Token: ${order.tokenNo}`, margin, startY);
+  let y = 40;
 
-  doc.setFontSize(12);
-  startY += 24;
-  doc.text(`Name: ${order.name}`, margin, startY);
-  startY += 16;
-  doc.text(`Mobile: ${order.mobile}`, margin, startY);
-  startY += 16;
-  doc.text(`Order Date: ${formatDate(order.order_date)}`, margin, startY);
-  startY += 16;
-  doc.text(
-    `Delivery Date: ${
-      order.delivery_date ? formatDate(order.delivery_date) : "-"
-    }`,
-    margin,
-    startY
-  );
-  startY += 16;
-  doc.text(`Urgent: ${order.urgent ? "YES" : "NO"}`, margin, startY);
-  startY += 16;
-  doc.text(
-    `Total Amount: Rs. ${order.totalAmount.toLocaleString("en-IN", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`,
-    margin,
-    startY
-  );
-  startY += 16;
-  doc.text(`Payment Method: ${order.paymentMethod || "-"}`, margin, startY);
+  // Outer Border
+  doc.setDrawColor(255, 107, 74);
+  doc.setLineWidth(2);
+  doc.rect(30, 30, 535, 780);
 
-  startY += 30;
+  // ===== HEADER =====
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(0, 150, 136);
+  doc.text("V-CLEAN LAUNDARY", 40, 50);
+  // y += 30;
+  // doc.text("LAUNDARY", 40, y);
+
+  doc.setFontSize(9);
+  doc.setTextColor(0);
+  doc.text("Helpdesk", 420, 45);
+  doc.text("+91-XXXXXXXX", 420, 60);
+
+  y += 30;
+
+  // ===== TITLE =====
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("Laundary Booking Voucher", 40, y);
+
+  y += 30;
+
+  doc.setFontSize(10);
+  doc.text(`Dear ${order.name},`, 40, y);
+  y += 16;
+  doc.text("Your booking request has been processed successfully.", 40, y);
+
+  y += 25;
+
+  // ===== CUSTOMER DETAILS =====
+  drawSectionHeader(doc, "Customer Details", y);
+  y += 35;
+
+  drawKeyValueRow(doc, "Name", order.name, 40, y);
+  y += 18;
+  drawKeyValueRow(doc, "Mobile", order.mobile, 40, y);
+  y += 18;
+  drawKeyValueRow(doc, "Payment Mode", order.paymentMethod, 40, y);
+
+  y += 25;
+
+  // ===== CLOTH DETAILS (TABLE) =====
+  drawSectionHeader(doc, "Cloth Details", y);
+  y += 30;
 
   const itemRows = order.items.map((i) => [
     i.clothType,
@@ -170,37 +199,72 @@ const downloadPDF = (order) => {
   ]);
 
   autoTable(doc, {
-    startY,
+    startY: y,
     startX: margin,
-    tableWidth: pageWidth - margin * 2, // 🔥 FULL WIDTH
+    tableWidth: pageWidth - margin * 2,
+
     head: [["Cloth Type", "Service", "Qty", "Price", "Total"]],
     body: itemRows,
 
     styles: {
-      fontSize: 11,
+      fontSize: 10,
       cellPadding: 6,
       valign: "middle",
     },
 
     headStyles: {
-      fillColor: [47, 128, 237],
+      fillColor: [255, 107, 74],
       textColor: 255,
       fontStyle: "bold",
     },
 
     columnStyles: {
-      0: { cellWidth: 90 },   // Cloth Type
-      1: { cellWidth: 200 },  // Service
-      2: { cellWidth: 50, halign: "right" }, // Qty
-      3: { cellWidth: 80, halign: "right" }, // Price
-      4: { cellWidth: 80, halign: "right" }, // Total
+      0: { cellWidth: 100 },
+      1: { cellWidth: 180 },
+      2: { cellWidth: 50, halign: "right" },
+      3: { cellWidth: 80, halign: "right" },
+      4: { cellWidth: 80, halign: "right" },
     },
 
-    theme: "striped",
+    theme: "grid",
   });
 
-  doc.save(`Bill_${order.tokenNo}.pdf`);
+  y = doc.lastAutoTable.finalY + 25;
+
+  // ===== FARE DETAILS =====
+  drawSectionHeader(doc, "Grand Total", y);
+  y += 30;
+
+  autoTable(doc, {
+    startY: y,
+    margin: { left: 40, right: 40 },
+    tableWidth: 475,
+    body: [
+      ["Total Amount", `Rs. ${order.totalAmount}`],
+    ],
+    styles: {
+      fontSize: 10,
+      cellPadding: 6,
+    },
+    columnStyles: {
+      0: { fontStyle: "bold" },
+      1: { halign: "right" },
+    },
+    theme: "grid",
+  });
+
+  // ===== FOOTER =====
+  doc.setFontSize(9);
+  doc.text(
+    "Please feel free to contact us for any queries regarding this reservation.",
+    40,
+    770
+  );
+
+  doc.save(`Voucher_${order.tokenNo}.pdf`);
 };
+
+
 
 
 
