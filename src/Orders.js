@@ -218,6 +218,8 @@ export default function Orders({ user }) {
                         <option value="">Select</option>
                         <option value="cash">Cash</option>
                         <option value="online">Online</option>
+                        <option value="cash+online">Cash + Online</option>
+
                       </select>
                     </td>
                   )}
