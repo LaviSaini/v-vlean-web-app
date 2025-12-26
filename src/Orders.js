@@ -74,7 +74,6 @@ export default function Orders({ user }) {
     setFilteredOrders(sorted);
   };
 
-  // ===== STATUS =====
   const collectOrder = async (id, status) => {
     if (status === "completed") return;
     setLoading(true);
@@ -89,6 +88,7 @@ export default function Orders({ user }) {
     }
   };
 
+  // ✅ UNDO FUNCTION (NEW)
   const undoCollectOrder = async (id) => {
     setLoading(true);
     try {
@@ -102,7 +102,6 @@ export default function Orders({ user }) {
     }
   };
 
-  // ===== UPDATE FIELDS =====
   const updateDeliveryDate = async (id, value) => {
     try {
       await updateDoc(doc(db, "orders", id), {
@@ -125,12 +124,179 @@ export default function Orders({ user }) {
     }
   };
 
-  // ===== PDF =====
-  const downloadPDF = (order) => {
-    const doc = new jsPDF("p", "pt", "a4");
-    doc.text(`Voucher - ${order.tokenNo}`, 40, 40);
-    doc.save(`Voucher_${order.tokenNo}.pdf`);
+  const drawSectionHeader = (doc, text, y) => {
+    doc.setFillColor(255, 107, 74);
+    doc.rect(40, y, 515, 24, "F");
+    doc.setTextColor(255);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text(text, 50, y + 16);
+    doc.setTextColor(0);
   };
+
+  const drawKeyValueRow = (doc, key, value, x, y) => {
+    doc.setFont("helvetica", "bold");
+    doc.text(key, x, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(value || "-", x + 150, y);
+  };
+const downloadPDF = (order) => {
+  const doc = new jsPDF("p", "pt", "a4");
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 40;
+
+  let y = 40;
+
+  // Outer Border
+  doc.setDrawColor(255, 107, 74);
+  doc.setLineWidth(2);
+  doc.rect(30, 30, 535, 780);
+
+  // ===== HEADER =====
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(0, 150, 136);
+  doc.text("V-CLEAN LAUNDARY & Drycleaning", 40, 50);
+
+  y += 30;
+  doc.setFontSize(9);
+  doc.setTextColor(0);
+  doc.text(
+    "H.I.G 36, Mukharjee Vihar, 38 Indra Nagar Kalyanpur, Kanpur - 208026",
+    40,
+    y
+  );
+  y += 10;
+  doc.text(
+    "Plot No:70, New I.I.T Society Madhavpuram Gooba Garden, kanpur - 208016",
+    40,
+    y
+  );
+
+  doc.text("Mobile No.", 420, 45);
+  doc.text("+91-9455623957", 420, 60);
+
+  y += 20;
+
+  // ===== TITLE =====
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("Laundary Booking Voucher", 40, y);
+
+  y += 25;
+
+  doc.setFontSize(10);
+  doc.text(`Dear ${order.name},`, 40, y);
+  y += 16;
+  doc.text(
+    "Your booking request has been processed successfully.",
+    40,
+    y
+  );
+
+  y += 25;
+
+  // ===== CUSTOMER DETAILS =====
+  drawSectionHeader(doc, "Customer Details", y);
+  y += 35;
+
+  drawKeyValueRow(doc, "Name", order.name, 40, y);
+  y += 18;
+  drawKeyValueRow(doc, "Mobile", order.mobile, 40, y);
+  y += 18;
+  drawKeyValueRow(doc, "Payment Mode", order.paymentMethod, 40, y);
+
+  y += 25;
+
+  // ===== CLOTH DETAILS =====
+  drawSectionHeader(doc, "Cloth Details", y);
+  y += 30;
+
+  const itemRows = order.items.map((i) => [
+    i.clothType,
+    i.service,
+    i.qty.toString(),
+    `Rs. ${i.price.toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`,
+    `Rs. ${(i.qty * i.price).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`,
+  ]);
+
+  autoTable(doc, {
+    startY: y,
+    startX: margin,
+    tableWidth: pageWidth - margin * 2,
+    head: [["Cloth Type", "Service", "Qty", "Price", "Total"]],
+    body: itemRows,
+    styles: { fontSize: 10, cellPadding: 6 },
+    headStyles: {
+      fillColor: [255, 107, 74],
+      textColor: 255,
+      fontStyle: "bold",
+    },
+    columnStyles: {
+      0: { cellWidth: 100 },
+      1: { cellWidth: 180 },
+      2: { cellWidth: 50, halign: "right" },
+      3: { cellWidth: 80, halign: "right" },
+      4: { cellWidth: 80, halign: "right" },
+    },
+    theme: "grid",
+  });
+
+  y = doc.lastAutoTable.finalY + 25;
+
+  // ===== GRAND TOTAL =====
+  drawSectionHeader(doc, "Grand Total", y);
+  y += 30;
+
+  autoTable(doc, {
+    startY: y,
+    margin: { left: 40, right: 40 },
+    tableWidth: 475,
+    body: [["Total Amount", `Rs. ${order.totalAmount}`]],
+    styles: { fontSize: 10, cellPadding: 6 },
+    columnStyles: {
+      0: { fontStyle: "bold" },
+      1: { halign: "right" },
+    },
+    theme: "grid",
+  });
+
+  // ===== FOOTER : TERMS & CONDITIONS =====
+  let footerY = pageHeight - 140;
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.text("Terms & Conditions", 40, footerY);
+
+  footerY += 15;
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+
+  const terms = [
+    "• Laundry deliveries will be made in 72 Hours.",
+    "• The Dry Cleaning garments will be delivered in 120 Hours.",
+    "• Urgent delivery of garments will be charged @ 50 % Extra.",
+    "• All disputes are subject to the jurisdiction of Courts in Kanpur only.",
+    "• For any queries, contact our customer care at 9455623957.",
+  ];
+
+  terms.forEach((line) => {
+    doc.text(line, 40, footerY);
+    footerY += 14;
+  });
+
+  doc.save(`Voucher_${order.tokenNo}.pdf`);
+};
+
+
+
 
   return (
     <div className="orders-container">
@@ -143,8 +309,6 @@ export default function Orders({ user }) {
         value={searchToken}
         onChange={(e) => setSearchToken(e.target.value)}
       />
-
-      {filteredOrders.length === 0 && !loading && <p>No orders found</p>}
 
       {filteredOrders.length !== 0 && (
         <div className="table-wrapper">
@@ -167,98 +331,51 @@ export default function Orders({ user }) {
 
             <tbody>
               {filteredOrders.map(o => (
-                <tr key={o.id} className={o.urgent ? "urgent-row" : ""}>
+                <tr key={o.id}>
                   <td>{o.tokenNo}</td>
                   <td>{o.name}</td>
                   <td>{o.mobile}</td>
-
-                  <td className="items-cell">
-                    {o.items?.map((i, idx) => (
-                      <div key={idx}>
-                        {i.clothType} – {i.service} × {i.qty}
-                      </div>
-                    ))}
-                  </td>
-
+                  <td>{o.items?.map((i, idx) => <div key={idx}>{i.clothType} – {i.service} × {i.qty}</div>)}</td>
                   <td>₹{o.totalAmount}</td>
                   <td>{formatDate(o.order_date)}</td>
+                  <td>{formatDate(o.delivery_date)}</td>
+                  <td>{o.urgent ? "YES" : "NO"}</td>
+                  <td>{o.status}</td>
+
+                  {isAdmin && <td>{o.paymentMethod}</td>}
 
                   <td>
-                    {isAdmin ? (
-                      <input
-                        type="date"
-                        value={
-                          o.delivery_date
-                            ? o.delivery_date.toDate().toISOString().split("T")[0]
-                            : ""
-                        }
-                        onChange={(e) => updateDeliveryDate(o.id, e.target.value)}
-                      />
-                    ) : (
-                      formatDate(o.delivery_date)
-                    )}
-                  </td>
-
-                  <td>
-                    <span className={`urgent-badge ${o.urgent ? "yes" : "no"}`}>
-                      {o.urgent ? "YES" : "NO"}
-                    </span>
-                  </td>
-
-                  <td>
-                    <span className={`status ${o.status}`}>{o.status}</span>
-                  </td>
-
-                  {isAdmin && (
-                    <td>
-                      <select
-                        value={o.paymentMethod || ""}
-                        onChange={(e) => updatePaymentMethod(o.id, e.target.value)}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        className="collect-btn"
+                        disabled={o.status === "completed"}
+                        onClick={() => collectOrder(o.id, o.status)}
                       >
-                        <option value="">Select</option>
-                        <option value="cash">Cash</option>
-                        <option value="online">Online</option>
-                        <option value="cash+online">Cash + Online</option>
+                        {o.status === "completed" ? "Completed" : "Collect"}
+                      </button>
 
-                      </select>
-                    </td>
-                  )}
-
-                  <td>
-                    {(isAdmin || o.customerEmail === user.email) && (
-                      <div style={{ display: "flex", gap: "8px" }}>
+                      {isAdmin && o.status === "completed" && (
                         <button
                           className="collect-btn"
-                          disabled={o.status === "completed"}
-                          onClick={() => collectOrder(o.id, o.status)}
+                          onClick={() => undoCollectOrder(o.id)}
                         >
-                          {o.status === "completed" ? "Completed" : "Collect"}
+                          Undo
                         </button>
+                      )}
 
-                        {isAdmin && o.status === "completed" && (
-                          <button
-                            className="collect-btn"
-                            onClick={() => undoCollectOrder(o.id)}
-                          >
-                            Undo
-                          </button>
-                        )}
-
-                        {isAdmin && (
-                          <button
-                            className="collect-btn"
-                            onClick={() => downloadPDF(o)}
-                          >
-                            Download PDF
-                          </button>
-                        )}
-                      </div>
-                    )}
+                      {isAdmin && (
+                        <button
+                          className="collect-btn"
+                          onClick={() => downloadPDF(o)}
+                        >
+                          Download PDF
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       )}
