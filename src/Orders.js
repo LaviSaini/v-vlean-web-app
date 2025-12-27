@@ -338,11 +338,34 @@ const downloadPDF = (order) => {
                   <td>{o.items?.map((i, idx) => <div key={idx}>{i.clothType} – {i.service} × {i.qty}</div>)}</td>
                   <td>₹{o.totalAmount}</td>
                   <td>{formatDate(o.order_date)}</td>
-                  <td>{formatDate(o.delivery_date)}</td>
+                  <td>
+                    {isAdmin ? (
+                      <input
+                        type="date"
+                        value={o.delivery_date ? o.delivery_date.toDate().toISOString().split("T")[0] : ""}
+                        onChange={(e) => updateDeliveryDate(o.id, e.target.value)}
+                      />
+                    ) : (
+                      formatDate(o.delivery_date)
+                    )}
+                  </td>
                   <td>{o.urgent ? "YES" : "NO"}</td>
                   <td>{o.status}</td>
 
-                  {isAdmin && <td>{o.paymentMethod}</td>}
+                  {isAdmin && (
+                    <td>
+                      <select
+                        value={o.paymentMethod || ""}
+                        onChange={(e) => updatePaymentMethod(o.id, e.target.value)}
+                      >
+                        <option value="">Select</option>
+                        <option value="cash">Cash</option>
+                        <option value="online">Online</option>
+                        <option value="cash + online">Cash + Online</option>
+
+                      </select>
+                    </td>
+                  )}
 
                   <td>
                     <div style={{ display: "flex", gap: "8px" }}>
