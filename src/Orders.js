@@ -281,9 +281,7 @@ const downloadPDF = (order) => {
 
   const terms = [
     "• Laundry deliveries will be made in 72 Hours.",
-    "• The Dry Cleaning garments will be delivered in 120 Hours.",
     "• Urgent delivery of garments will be charged @ 50 % Extra.",
-    "• All disputes are subject to the jurisdiction of Courts in Kanpur only.",
     "• For any queries, contact our customer care at 9455623957.",
   ];
 
