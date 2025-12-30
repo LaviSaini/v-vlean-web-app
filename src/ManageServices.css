@@ -4,47 +4,71 @@
   padding: 20px;
   background: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  font-family: Arial, sans-serif;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
+/* ===== HEADER ===== */
 .manage-services h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: #1f2937;
 }
 
-/* Search */
+/* ===== SEARCH ===== */
 .manage-services input[type="text"],
-.manage-services input[type="number"] {
+.manage-services input[type="number"],
+.manage-services select {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #d1d5db;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
-.manage-services input:focus {
+.manage-services input:focus,
+.manage-services select:focus {
   outline: none;
   border-color: #4f46e5;
 }
 
-/* Service List */
-.services-list {
-  max-height: 420px;
-  overflow-y: auto;
-  border: 1px solid #eee;
-  border-radius: 8px;
+/* ===== ADD BUTTON ===== */
+.add-service-btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-/* Single Service Row */
+.add-service-btn:hover {
+  background-color: #4338ca;
+}
+
+/* ===== SERVICES LIST ===== */
+.services-list {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 420px;
+}
+
+/* ===== SINGLE ROW ===== */
 .service-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 14px;
-  border-bottom: 1px solid #f1f1f1;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
 }
 
 .service-row:last-child {
@@ -52,34 +76,37 @@
 }
 
 .service-row:hover {
-  background-color: #fafafa;
+  background-color: #f9fafb;
 }
 
-/* Service Text */
+/* ===== SERVICE TEXT ===== */
 .service-row b {
   display: block;
   font-size: 15px;
-  color: #222;
+  color: #111827;
 }
 
 .service-row small {
-  color: #777;
+  display: block;
   font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
 }
 
-/* Buttons */
+/* ===== ACTION BUTTONS ===== */
 .service-row button {
-  margin-left: 6px;
   border: none;
   padding: 6px 10px;
-  cursor: pointer;
-  border-radius: 4px;
   font-size: 14px;
-  transition: 0.2s ease;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .service-row button:hover {
   transform: scale(1.05);
+  opacity: 0.9;
 }
 
 .service-row button:first-child {
@@ -92,7 +119,7 @@
   color: #991b1b;
 }
 
-/* Editor */
+/* ===== EDITOR PANEL ===== */
 .editor {
   margin-top: 20px;
   padding: 15px;
@@ -102,22 +129,23 @@
 }
 
 .editor h3 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 16px;
   color: #111827;
 }
 
-/* Editor Buttons */
+/* ===== EDITOR BUTTONS ===== */
 .editor button {
   padding: 8px 14px;
   border-radius: 6px;
   border: none;
-  cursor: pointer;
   font-size: 14px;
-  margin-right: 10px;
+  cursor: pointer;
+  margin-right: 8px;
 }
 
 .editor button:first-of-type {
-  background-color: #4f46e5;
+  background-color: #10b981;
   color: white;
 }
 
@@ -126,24 +154,24 @@
   color: white;
 }
 
-/* Scrollbar */
+/* ===== SCROLLBAR ===== */
 .services-list::-webkit-scrollbar {
   width: 6px;
 }
 
 .services-list::-webkit-scrollbar-thumb {
   background-color: #c7d2fe;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
   .service-row {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .service-row div:last-child {
+  .service-row > div:last-child {
     margin-top: 8px;
   }
 }

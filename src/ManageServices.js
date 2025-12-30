@@ -8,6 +8,7 @@ export default function ManageServices() {
   const [servicesData, setServicesData] = useState(null);
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState(null);
+  const [newServiceMode, setNewServiceMode] = useState(false);
 
   // LOAD SERVICES
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function ManageServices() {
       if (snap.exists()) {
         setServicesData(snap.data());
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to load services");
     }
   };
@@ -36,7 +37,7 @@ export default function ManageServices() {
     }
   };
 
-  // FLATTEN FOR SEARCH
+  // FLATTEN SERVICES FOR SEARCH
   const flattenServices = () => {
     if (!servicesData) return [];
 
@@ -82,7 +83,6 @@ export default function ManageServices() {
     if (!editing) return;
 
     const updated = structuredClone(servicesData);
-
     const { category, clothType, oldName, name, price } = editing;
 
     if (!clothType) {
@@ -100,6 +100,7 @@ export default function ManageServices() {
 
     saveServices(updated);
     setEditing(null);
+    setNewServiceMode(false);
   };
 
   // DELETE SERVICE
@@ -137,6 +138,7 @@ export default function ManageServices() {
     target.push({ name, price });
     saveServices(updated);
     setEditing(null);
+    setNewServiceMode(false);
   };
 
   if (!servicesData) return <p>Loading services...</p>;
@@ -145,12 +147,30 @@ export default function ManageServices() {
     <div className="manage-services">
       <h2>Manage Services</h2>
 
+      {/* SEARCH */}
       <input
         placeholder="Search service..."
         value={search}
         onChange={e => setSearch(e.target.value)}
       />
 
+      {/* ADD SERVICE BUTTON */}
+      <button
+        className="add-service-btn"
+        onClick={() => {
+          setEditing({
+            category: Object.keys(servicesData)[0],
+            clothType: "",
+            name: "",
+            price: "",
+          });
+          setNewServiceMode(true);
+        }}
+      >
+        ➕ Add New Service
+      </button>
+
+      {/* SERVICES LIST */}
       <div className="services-list">
         {services.map((s, idx) => (
           <div key={idx} className="service-row">
@@ -162,7 +182,12 @@ export default function ManageServices() {
             </div>
 
             <div>
-              <button onClick={() => setEditing({ ...s, oldName: s.name })}>
+              <button
+                onClick={() => {
+                  setEditing({ ...s, oldName: s.name });
+                  setNewServiceMode(false);
+                }}
+              >
                 ✏️
               </button>
               <button onClick={() => deleteService(s)}>🗑️</button>
@@ -171,9 +196,31 @@ export default function ManageServices() {
         ))}
       </div>
 
+      {/* EDITOR */}
       {editing && (
         <div className="editor">
-          <h3>{editing.oldName ? "Edit Service" : "Add Service"}</h3>
+          <h3>{newServiceMode ? "Add New Service" : "Edit Service"}</h3>
+
+          <select
+            value={editing.category}
+            onChange={e =>
+              setEditing({ ...editing, category: e.target.value })
+            }
+          >
+            {Object.keys(servicesData).map(cat => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+
+          <input
+            placeholder="Cloth Type (optional, e.g. Men - Shirt)"
+            value={editing.clothType}
+            onChange={e =>
+              setEditing({ ...editing, clothType: e.target.value })
+            }
+          />
 
           <input
             value={editing.name}
@@ -192,10 +239,18 @@ export default function ManageServices() {
             placeholder="Price"
           />
 
-          <button onClick={editing.oldName ? updateService : addService}>
+          <button onClick={newServiceMode ? addService : updateService}>
             Save
           </button>
-          <button onClick={() => setEditing(null)}>Cancel</button>
+
+          <button
+            onClick={() => {
+              setEditing(null);
+              setNewServiceMode(false);
+            }}
+          >
+            Cancel
+          </button>
         </div>
       )}
     </div>
