@@ -9,6 +9,7 @@ import Header from "./Header";
 import Orders from "./Orders";
 import AddOrder from "./AddOrder";
 import Login from "./Login";
+import ManageServices from "./ManageServices";
 import PrivateRoute from "./PrivateRoute";
 
 function App() {
@@ -38,6 +39,12 @@ function App() {
           <Route path="/add-order" element={
             <PrivateRoute user={user}>
               <AddOrder />
+            </PrivateRoute>
+          }/>
+
+          <Route path="/manage-services" element={
+            <PrivateRoute user={user}>
+              <ManageServices />
             </PrivateRoute>
           }/>
 

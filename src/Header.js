@@ -7,7 +7,7 @@ import "./Header.css";
 export default function Header({ user }) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const isAdmin = user.email === "lavisaini1996@gmail.com";
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -33,6 +33,11 @@ export default function Header({ user }) {
       <nav className="nav">
         <NavLink to="/orders" className="nav-link">Orders</NavLink>
         <NavLink to="/add-order" className="nav-link">Add Order</NavLink>
+        {isAdmin &&
+          <NavLink to="/manage-services" className="nav-link">Manage Services</NavLink>
+
+        }
+
         {user && <button className="logout-btn" onClick={handleLogout}>Logout</button>}
       </nav>
 
@@ -40,6 +45,9 @@ export default function Header({ user }) {
       <div className={`mobile-nav ${menuOpen ? "active" : ""}`}>
         <NavLink to="/orders" className="nav-link" onClick={() => setMenuOpen(false)}>Orders</NavLink>
         <NavLink to="/add-order" className="nav-link" onClick={() => setMenuOpen(false)}>Add Order</NavLink>
+        {isAdmin &&
+          <NavLink to="/manage-services" className="nav-link">Manage Services</NavLink>
+        }
         {user && <button className="logout-btn" onClick={handleLogout}>Logout</button>}
       </div>
     </header>

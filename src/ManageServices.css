@@ -1,0 +1,149 @@
+.manage-services {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+}
+
+.manage-services h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Search */
+.manage-services input[type="text"],
+.manage-services input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.manage-services input:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+/* Service List */
+.services-list {
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+/* Single Service Row */
+.service-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.service-row:last-child {
+  border-bottom: none;
+}
+
+.service-row:hover {
+  background-color: #fafafa;
+}
+
+/* Service Text */
+.service-row b {
+  display: block;
+  font-size: 15px;
+  color: #222;
+}
+
+.service-row small {
+  color: #777;
+  font-size: 12px;
+}
+
+/* Buttons */
+.service-row button {
+  margin-left: 6px;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.service-row button:hover {
+  transform: scale(1.05);
+}
+
+.service-row button:first-child {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.service-row button:last-child {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Editor */
+.editor {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.editor h3 {
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+/* Editor Buttons */
+.editor button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.editor button:first-of-type {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.editor button:last-of-type {
+  background-color: #9ca3af;
+  color: white;
+}
+
+/* Scrollbar */
+.services-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.services-list::-webkit-scrollbar-thumb {
+  background-color: #c7d2fe;
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .service-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .service-row div:last-child {
+    margin-top: 8px;
+  }
+}
